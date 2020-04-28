@@ -2,7 +2,7 @@ import time
 import random
 import asyncio
 import curses
-from space_move import BORDER_LINE, animate_spaceship, sleep
+from space_move import BORDER_LINE, animate_spaceship, sleep,run_spaceships
 from space_animations import fetch_spaceship_imgs, fetch_garbages
 from space_garbage import fly_garbage
 
@@ -78,8 +78,9 @@ def create_coros(canvas, frame1, frame2):
                    ]
 
     return [
-        animate_spaceship(canvas, frame1, frame2),
+        animate_spaceship(frame1, frame2),
         *stars_coros,
+        run_spaceships(canvas),
         # fire(canvas, 10, 20),
     ]
 
@@ -94,7 +95,7 @@ def draws(canvas):
     global coros
     coros = create_coros(canvas, frame1, frame2)
     while True:
-        start_garbage_coro.send(None)
+        # start_garbage_coro.send(None)
         for coro in coros.copy():
             try:
                 coro.send(None)
