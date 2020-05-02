@@ -1,6 +1,8 @@
 import asyncio
 from itertools import cycle
+import space_animations
 from physics import update_speed
+import curses
 
 SPACE_KEY_CODE = 32
 LEFT_KEY_CODE = 260
@@ -10,6 +12,9 @@ DOWN_KEY_CODE = 258
 BORDER_LINE = 2
 SPACESHIP_FRAME = ''
 FRAME = ''
+OLD_ROW = ''
+OLD_COL = ''
+FRAME2 = ''
 
 async def sleep(tics=1):
     for _ in range(tics):
@@ -70,47 +75,12 @@ def read_controls(canvas, speed=1):
 
     return rows_direction, columns_direction, space_pressed
 
-async def animate_spaceship(frame1, frame2):
-    frames = cycle([frame1,frame2])
-    while True:
-        for frame in frames:
-            global FRAME
-            FRAME = frame
-            await asyncio.sleep(0)
-
-
-async def run_spaceships(canvas):
-    window_row_size, window_col_size = canvas.getmaxyx()
-    row, column = 4, 6
-    while True:
-        keyboard_row, keyboard_column, space_pressed = read_controls(canvas)
-        row += keyboard_row
-        column += keyboard_column
-        frame_row, frame_column = get_frame_size(FRAME)
-        border_col = window_col_size - frame_column
-        border_row = window_row_size - frame_row
-
-        if row <= 0:
-            row = 1
-        elif border_row <= row:
-            row = window_row_size - (frame_row + BORDER_LINE)
-        elif column <= 0:
-            column = 2
-        elif border_col <= column:
-            column = window_col_size - (frame_column + BORDER_LINE)
-        else:
-            row, column
-
-        draw_frame(canvas, row, column, FRAME)
-        await asyncio.sleep(0)
-        old_row = row
-        old_column = column
-        draw_frame(canvas, old_row, old_column, FRAME, negative=True)
-        await asyncio.sleep(0)
-
 
 def get_frame_size(text):
     lines = text.splitlines()
     rows = len(lines)
     columns = max([len(line) for line in lines])
     return rows, columns
+
+
+
