@@ -1,8 +1,5 @@
 import asyncio
-from itertools import cycle
-import space_animations
-from physics import update_speed
-import curses
+import os
 
 SPACE_KEY_CODE = 32
 LEFT_KEY_CODE = 260
@@ -22,6 +19,7 @@ async def sleep(tics=1):
 
 
 def draw_frame(canvas, start_row, start_column, text, negative=False):
+
     rows_number, columns_number = canvas.getmaxyx()
 
     for row, line in enumerate(text.splitlines(), round(start_row)):
@@ -76,11 +74,45 @@ def read_controls(canvas, speed=1):
     return rows_direction, columns_direction, space_pressed
 
 
+async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
+    """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
+    rows_number, columns_number = canvas.getmaxyx()
+
+    column = max(column, 0)
+    column = min(column, columns_number - 1)
+
+    row = 0
+
+    while row < rows_number:
+        draw_frame(canvas, row, column, garbage_frame)
+        await asyncio.sleep(0)
+        draw_frame(canvas, row, column, garbage_frame, negative=True)
+        row += speed
+
+
+
 def get_frame_size(text):
     lines = text.splitlines()
     rows = len(lines)
     columns = max([len(line) for line in lines])
     return rows, columns
+
+def fetch_garbages():
+    files_garbages = ['trash_large.txt', 'trash_small.txt', 'trash_xl.txt']
+    garbages_frames = []
+    for file_garbage in files_garbages:
+        path = os.path.join('picture', file_garbage)
+        with open(path, 'r') as garbage:
+            garbages_frames.append(garbage.read())
+    return garbages_frames
+
+
+def fetch_spaceship_imgs():
+    with open('picture/frame1.txt', 'r') as picture:
+        frame1 = picture.read()
+    with open('picture/frame2.txt', 'r') as picture:
+        frame2 = picture.read()
+    return frame1, frame2
 
 
 

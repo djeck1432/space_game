@@ -1,5 +1,5 @@
 import asyncio
-from space_move import draw_frame
+from .curses_tools import draw_frame
 
 
 class Obstacle:

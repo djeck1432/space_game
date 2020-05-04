@@ -1,4 +1,5 @@
 import os
+from curses_tools import draw_frame
 
 
 def fetch_garbages():
