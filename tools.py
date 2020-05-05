@@ -47,7 +47,6 @@ def draw_frame(canvas, start_row, start_column, text, negative=False):
 
 
 def read_controls(canvas):
-    """Read keys pressed and returns tuple witl controls state."""
 
     rows_direction = columns_direction = 0
     space_pressed = False
@@ -77,7 +76,6 @@ def read_controls(canvas):
 
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
-    """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
     rows_number, columns_number = canvas.getmaxyx()
 
     column = max(column, 0)

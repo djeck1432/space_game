@@ -12,7 +12,6 @@ class Obstacle:
         self.uid = uid
 
     def get_bounding_box_frame(self):
-        # increment box size to compensate obstacle movement
         rows, columns = self.rows_size + 1, self.columns_size + 1
         return '\n'.join(_get_bounding_box_lines(rows, columns))
 
@@ -24,7 +23,6 @@ class Obstacle:
         return row, column, self.get_bounding_box_frame()
 
     def has_collision(self, obj_corner_row, obj_corner_column, obj_size_rows=1, obj_size_columns=1):
-        '''Determine if collision has occured. Return True or False.'''
         return has_collision(
             (self.row, self.column),
             (self.rows_size, self.columns_size),
@@ -41,7 +39,6 @@ def _get_bounding_box_lines(rows, columns):
 
 
 async def show_obstacles(canvas, obstacles):
-    """Display bounding boxes of every obstacle in a list"""
 
     while True:
         boxes = []
@@ -66,7 +63,6 @@ def _is_point_inside(corner_row, corner_column, size_rows, size_columns, point_r
 
 
 def has_collision(obstacle_corner, obstacle_size, obj_corner, obj_size=(1, 1)):
-    '''Determine if collision has occured. Return True or False.'''
 
     opposite_obstacle_corner = (
         obstacle_corner[0] + obstacle_size[0] - 1,
