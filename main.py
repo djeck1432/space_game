@@ -130,7 +130,23 @@ async def animate_spaceship(frame1, frame2):
             await asyncio.sleep(0)
             FRAME = frame
 
+def check_going_abroad(canvas,row,column):
+    window_row_size, window_col_size = canvas.getmaxyx()
+    frame_row, frame_column = get_frame_size(FRAME)
+    border_col = window_col_size - frame_column
+    border_row = window_row_size - frame_row
 
+    if row <= 0:
+        row = 1
+    elif border_row <= row:
+        row = window_row_size - (frame_row + BORDER_LINE)
+    elif column <= 0:
+        column = 2
+    elif border_col <= column:
+        column = window_col_size - (frame_column + BORDER_LINE)
+    else:
+        row, column
+    return row,column
 
 async def run_spaceships(canvas):
     window_row_size, window_col_size = canvas.getmaxyx()
@@ -149,24 +165,13 @@ async def run_spaceships(canvas):
                 await show_gameover(canvas)
                 return None
         else:
+            # row,column,space_pressed = get_coordinates(canvas,row,column)
             keyboard_row, keyboard_column, space_pressed = read_controls(canvas)
             row_speed, column_speed = update_speed(row_speed,column_speed,keyboard_row,keyboard_column)
             row += row_speed
             column += column_speed
-            frame_row, frame_column = get_frame_size(FRAME)
-            border_col = window_col_size - frame_column
-            border_row = window_row_size - frame_row
+            row,column = check_going_abroad(canvas,row,column)
 
-            if row <= 0:
-                row = 1
-            elif border_row <= row:
-                row = window_row_size - (frame_row + BORDER_LINE)
-            elif column <= 0:
-                column = 2
-            elif border_col <= column:
-                column = window_col_size - (frame_column + BORDER_LINE)
-            else:
-                row, column
 
             if space_pressed and year > 1970:
                 coros.append(fire(canvas,row-1,column+2))
