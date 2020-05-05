@@ -46,7 +46,9 @@ def draw_frame(canvas, start_row, start_column, text, negative=False):
             canvas.addch(row, column, symbol)
 
 
-def read_controls(canvas, speed=1):
+def read_controls(canvas):
+    """Read keys pressed and returns tuple witl controls state."""
+
     rows_direction = columns_direction = 0
     space_pressed = False
 
@@ -57,16 +59,16 @@ def read_controls(canvas, speed=1):
             break
 
         if pressed_key_code == UP_KEY_CODE:
-            rows_direction -= speed
+            rows_direction = -1
 
         if pressed_key_code == DOWN_KEY_CODE:
-            rows_direction = speed
+            rows_direction = 1
 
         if pressed_key_code == RIGHT_KEY_CODE:
-            columns_direction = speed
+            columns_direction = 1
 
         if pressed_key_code == LEFT_KEY_CODE:
-            columns_direction -= speed
+            columns_direction = -1
 
         if pressed_key_code == SPACE_KEY_CODE:
             space_pressed = True

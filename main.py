@@ -4,17 +4,19 @@ import asyncio
 import web_pdb
 import curses
 from itertools import cycle
-
-from сurses_tools import read_controls, get_frame_size, draw_frame,fly_garbage,fetch_spaceship_imgs, fetch_garbages,sleep
+from tools import read_controls, get_frame_size, draw_frame,fly_garbage,fetch_spaceship_imgs, fetch_garbages,sleep
 from physics import update_speed
 from obstacles import Obstacle,show_obstacles
 from explosion import explode
+from game_scenario import get_garbage_delay_tics
 
 obstacles = []
 obstacles_in_last_collisions = []
 coros = []
 GARBAGES = ['duck.txt', 'hubble.txt', 'lamp.txt', 'trash_large.txt', 'trash_small.txt', 'trash_xl.txt']
 BORDER_LINE = 2
+STEP_YEAR = 15
+year = 1957
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
     row, column = start_row, start_column
@@ -39,21 +41,30 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
     curses.beep()
     while 0 < row < max_row and 0 < column < max_column:
         for obstacle in obstacles:
-            is_ob = obstacle.has_collision(row, column)
-            if is_ob:
+            is_obstacle = obstacle.has_collision(row, column)
+            if is_obstacle:
                 obstacles_in_last_collisions.append(obstacle)
                 return None
             else:
+                canvas.addstr(1,1,str(f'row:{row}'))
+                canvas.addstr(2, 2, str(f'col:{column}'))
                 canvas.addstr(round(row), round(column), symbol)
                 await asyncio.sleep(0)
                 canvas.addstr(round(row), round(column), ' ')
                 row += rows_speed
                 column += columns_speed
 
-def show_gameover(canvas):
+async def show_gameover(canvas):
+    row_size,col_size = canvas.getmaxyx()
     with open('picture/game_over.txt','r') as text:
         gameover = text.read()
-        draw_frame(canvas,15,35,gameover)
+        frame_row_size,frame_col_size = get_frame_size(gameover)
+        middle_row = (row_size - frame_row_size) // 2
+        middle_col = (col_size - frame_col_size) // 2
+        while True:
+            draw_frame(canvas,middle_row,middle_col,gameover)
+            await asyncio.sleep(0)
+
 
 async def blink(random_ignition, canvas, row, column, symbol='*'):
     for _ in range(random_ignition):
@@ -87,7 +98,7 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
     while row < rows_number:
         if obstacle in obstacles_in_last_collisions:
-            obstacles_in_last_collisions.remove(obstacle)
+            obstacles.remove(obstacle)
             await explode(canvas, row, column)
             return None
         else:
@@ -102,11 +113,11 @@ async def create_garbage_coros(canvas):
     row, col = canvas.getmaxyx()
     global coros
     while True:
+        speed = get_garbage_delay_tics(year)
         garbages_frames = fetch_garbages()
         garbage_frame = random.choice(garbages_frames)
-        await sleep(random.randint(1, 20))
+        await sleep(random.randint(1, speed))
         coros.append(fly_garbage(canvas, random.randint(2, col), garbage_frame))
-
 
 
 async def animate_spaceship(frame1, frame2):
@@ -126,18 +137,17 @@ async def run_spaceships(canvas):
     row, column = 15, 35
     row_speed = column_speed = 0
     old_frame = ''
-    global OLD_ROW, OLD_COL, FRAME2, coros, obstacles
+    global OLD_ROW, OLD_COL, FRAME2, coros, obstacles,year
     OLD_ROW, OLD_COL = row, column
     _, frame2 = fetch_spaceship_imgs()
     while True:
         for obstacle in obstacles:
-            is_ob = obstacle.has_collision(row, column)
-            if is_ob:
+            is_obstacle = obstacle.has_collision(row, column)
+            if is_obstacle:
                 obstacles_in_last_collisions.append(obstacle)
-                show_gameover(canvas)
                 draw_frame(canvas, row, column, FRAME, negative=True)
+                await show_gameover(canvas)
                 return None
-
         else:
             keyboard_row, keyboard_column, space_pressed = read_controls(canvas)
             row_speed, column_speed = update_speed(row_speed,column_speed,keyboard_row,keyboard_column)
@@ -158,7 +168,7 @@ async def run_spaceships(canvas):
             else:
                 row, column
 
-            if space_pressed:
+            if space_pressed and year > 1970:
                 coros.append(fire(canvas,row-1,column+2))
 
             draw_frame(canvas, OLD_ROW, OLD_COL, old_frame, negative=True)
@@ -187,20 +197,28 @@ def create_coros(canvas, frame1, frame2):
         animate_spaceship(frame1, frame2),
         *stars_coros,
         run_spaceships(canvas),
+        add_year()
     ]
+async def add_year():
+    global year,coros
+    while True:
+        year += 1
+        await sleep(5)
 
 
 def draws(canvas):
     curses.curs_set(False)
     canvas.border()
     canvas.nodelay(True)
-
     frame1, frame2 = fetch_spaceship_imgs()
-    start_garbage_coro = create_garbage_coros(canvas)
-    global coros,obstacles
+
+    global coros,obstacles,year
     coros = create_coros(canvas, frame1, frame2)
+    start_garbage_coro = create_garbage_coros(canvas)
     while True:
-        start_garbage_coro.send(None)
+        canvas.addstr(40,40,str(f'Year {year}'))
+        if year >= 1961:
+            start_garbage_coro.send(None)
         for coro in coros.copy():
             try:
                 coro.send(None)
