@@ -148,8 +148,8 @@ def check_going_abroad(canvas,row,column):
 async def run_spaceships(canvas):
     row_speed = column_speed = 0
     old_frame = ''
-    global OLD_ROW, OLD_COL, coros, obstacles,year
-    OLD_ROW, OLD_COL = row, column = 15, 35
+    global coros, obstacles,year
+    old_row, old_col = row, column = 15, 35
     while True:
         for obstacle in obstacles:
             is_obstacle = obstacle.has_collision(row, column)
@@ -168,16 +168,16 @@ async def run_spaceships(canvas):
             if space_pressed and year > 1970:
                 coros.append(fire(canvas,row-1,column+2))
 
-            draw_frame(canvas, OLD_ROW, OLD_COL, old_frame, negative=True)
+            draw_frame(canvas, old_row, old_col, old_frame, negative=True)
             draw_frame(canvas, row, column, FRAME)
             old_frame = FRAME
-            OLD_ROW, OLD_COL = row, column
+            old_row, old_col = row, column
             await asyncio.sleep(0)
 
-            draw_frame(canvas, OLD_ROW, OLD_COL, old_frame, negative=True)
+            draw_frame(canvas, old_row, old_col, old_frame, negative=True)
             draw_frame(canvas, row, column, FRAME)
             old_frame = FRAME
-            OLD_ROW, OLD_COL = row, column
+            old_row, old_col = row, column
 
 def create_coros(canvas):
     window_row_size, window_col_size = canvas.getmaxyx()
