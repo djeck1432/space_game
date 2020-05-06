@@ -180,13 +180,13 @@ async def run_spaceships(canvas):
             OLD_ROW, OLD_COL = row, column
 
 def create_coros(canvas):
-    window_size_row, window_size_col = canvas.getmaxyx()
+    window_row_size, window_col_size = canvas.getmaxyx()
     frame1, frame2 = fetch_spaceship_imgs()
     start_types = ['+', '*', '.', ':']
     stars_coros = [blink(random.randint(0, 100),
                          canvas,
-                         random.randint(BORDER_LINE, window_size_row - BORDER_LINE),
-                         random.randint(BORDER_LINE, window_size_col - BORDER_LINE),
+                         random.randint(BORDER_LINE, window_row_size - BORDER_LINE),
+                         random.randint(BORDER_LINE, window_col_size - BORDER_LINE),
                          symbol=random.choice(start_types)
                          ) for _ in range(100)
                    ]
