@@ -85,7 +85,6 @@ async def blink(random_ignition, canvas, row, column, symbol='*'):
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     rows_number, columns_number = canvas.getmaxyx()
-
     column = max(column, 0)
     column = min(column, columns_number - 1)
     row = 0
@@ -93,8 +92,6 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     row_size, col_size = get_frame_size(garbage_frame)
     obstacle = Obstacle(row, column, row_size, col_size)
     obstacles.append(obstacle)
-    # obstacle_coro = show_obstacles(canvas, obstacles)
-    # coros.append(obstacle_coro)
 
     while row < rows_number:
         if obstacle in obstacles_in_last_collisions:
