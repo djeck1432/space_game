@@ -55,7 +55,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 async def show_gameover(canvas):
     window_row_size,window_col_size = canvas.getmaxyx()
-    with open('picture/game_over.txt','r') as text:
+    with open('pictures/game_over.txt','r') as text:
         gameover = text.read()
         frame_row_size,frame_col_size = get_frame_size(gameover)
         middle_row = (window_row_size - frame_row_size) // 2
@@ -216,7 +216,7 @@ def draws(canvas):
     coros = create_coros(canvas)
     start_garbage_coro = create_garbage_coros(canvas)
     while True:
-        canvas.addstr(40,40,str(f'Year {year}'))
+        canvas.addstr(40,40,f'Year {year}')
         if year >= 1961:
             start_garbage_coro.send(None)
         for coro in coros.copy():
