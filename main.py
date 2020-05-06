@@ -152,8 +152,8 @@ async def run_spaceships(canvas):
     old_row, old_col = row, column = 15, 35
     while True:
         for obstacle in obstacles:
-            is_obstacle = obstacle.has_collision(row, column)
-            if is_obstacle:
+            is_collision = obstacle.has_collision(row, column)
+            if is_collision:
                 obstacles_in_last_collisions.append(obstacle)
                 draw_frame(canvas, row, column, FRAME, negative=True)
                 await show_gameover(canvas)

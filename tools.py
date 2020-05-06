@@ -9,8 +9,8 @@ DOWN_KEY_CODE = 258
 BORDER_LINE = 2
 SPACESHIP_FRAME = ''
 FRAME = ''
-OLD_ROW = ''
-OLD_COL = ''
+old_row = ''
+old_col = ''
 FRAME2 = ''
 
 async def sleep(tics=1):
