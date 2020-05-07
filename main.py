@@ -130,7 +130,7 @@ async def animate_spaceship(frame1, frame2):
             await asyncio.sleep(0)
             FRAME = frame
 
-def check_going_abroad(canvas,row,column):
+def control_screen_borders(canvas, row, column):
     window_row_size, window_col_size = canvas.getmaxyx()
     frame_row, frame_column = get_frame_size(FRAME)
     border_col = window_col_size - frame_column
@@ -166,7 +166,7 @@ async def run_spaceships(canvas):
             row_speed, column_speed = update_speed(row_speed,column_speed,keyboard_row,keyboard_column)
             row += row_speed
             column += column_speed
-            row,column = check_going_abroad(canvas,row,column)
+            row,column = control_screen_borders(canvas, row, column)
 
             if space_pressed and year > 1970:
                 coros.append(fire(canvas,row-1,column+2))
