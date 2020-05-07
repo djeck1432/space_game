@@ -108,13 +108,16 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
 async def create_garbage_coros(canvas):
     row, col = canvas.getmaxyx()
-    global coros
+    global coros,year
     while True:
-        speed = get_garbage_delay_tics(year)
-        garbages_frames = fetch_garbages()
-        garbage_frame = random.choice(garbages_frames)
-        await sleep(random.randint(1, speed))
-        coros.append(fly_garbage(canvas, random.randint(2, col), garbage_frame))
+        if year < 1961:
+            await asyncio.sleep(0)
+        else:
+            speed = get_garbage_delay_tics(year)
+            garbages_frames = fetch_garbages()
+            garbage_frame = random.choice(garbages_frames)
+            await sleep(random.randint(1, speed))
+            coros.append(fly_garbage(canvas, random.randint(2, col), garbage_frame))
 
 
 async def animate_spaceship(frame1, frame2):
@@ -190,12 +193,13 @@ def create_coros(canvas):
                          symbol=random.choice(star_types)
                          ) for _ in range(100)
                    ]
-
+    start_garbage_coro = create_garbage_coros(canvas)
     return [
         animate_spaceship(frame1, frame2),
         *stars_coros,
         run_spaceships(canvas),
-        get_year()
+        get_year(),
+        start_garbage_coro,
     ]
 
 
@@ -214,11 +218,9 @@ def draws(canvas):
 
     global coros,obstacles,year
     coros = create_coros(canvas)
-    start_garbage_coro = create_garbage_coros(canvas)
     while True:
         canvas.addstr(40,40,f'Year {year}')
-        if year >= 1961:
-            start_garbage_coro.send(None)
+        #web_pdb.set_trace()
         for coro in coros.copy():
             try:
                 coro.send(None)
