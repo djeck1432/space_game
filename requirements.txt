@@ -1,0 +1,3 @@
+asyncore-wsgi==0.0.9
+bottle==0.12.18
+web-pdb==1.5.3

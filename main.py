@@ -1,7 +1,6 @@
 import time
 import random
 import asyncio
-import web_pdb
 import curses
 from itertools import cycle
 from tools import read_controls, get_frame_size, draw_frame,fly_garbage,fetch_spaceship_imgs, fetch_garbages,sleep
@@ -15,7 +14,7 @@ obstacles_in_last_collisions = []
 coros = []
 GARBAGES = ['duck.txt', 'hubble.txt', 'lamp.txt', 'trash_large.txt', 'trash_small.txt', 'trash_xl.txt']
 BORDER_LINE = 2
-year = 1957
+year = 1950
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
     row, column = start_row, start_column
@@ -177,10 +176,6 @@ async def run_spaceships(canvas):
             old_row, old_col = row, column
             await asyncio.sleep(0)
 
-            draw_frame(canvas, old_row, old_col, old_frame, negative=True)
-            draw_frame(canvas, row, column, FRAME)
-            old_frame = FRAME
-            old_row, old_col = row, column
 
 def create_coros(canvas):
     window_row_size, window_col_size = canvas.getmaxyx()
@@ -212,20 +207,19 @@ async def get_year():
 
 def draws(canvas):
     curses.curs_set(False)
-    canvas.border()
     canvas.nodelay(True)
-
 
     global coros,obstacles,year
     coros = create_coros(canvas)
     while True:
+        canvas.border()
         canvas.addstr(40,40,f'Year {year}')
-        #web_pdb.set_trace()
         for coro in coros.copy():
             try:
                 coro.send(None)
             except StopIteration:
                 coros.remove(coro)
+
 
         time.sleep(0.1)
         canvas.refresh()
