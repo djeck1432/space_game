@@ -1,6 +1,7 @@
 import time
 import random
 import asyncio
+import web_pdb
 import curses
 from itertools import cycle
 from tools import read_controls, get_frame_size, draw_frame,fly_garbage,fetch_spaceship_imgs, fetch_garbages,sleep
@@ -14,7 +15,7 @@ obstacles_in_last_collisions = []
 coros = []
 GARBAGES = ['duck.txt', 'hubble.txt', 'lamp.txt', 'trash_large.txt', 'trash_small.txt', 'trash_xl.txt']
 BORDER_LINE = 2
-year = 1950
+year = 1957
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
     row, column = start_row, start_column
@@ -44,8 +45,6 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
                 obstacles_in_last_collisions.append(obstacle)
                 return None
             else:
-                canvas.addstr(1,1,str(f'row:{row}'))
-                canvas.addstr(2, 2, str(f'col:{column}'))
                 canvas.addstr(round(row), round(column), symbol)
                 await asyncio.sleep(0)
                 canvas.addstr(round(row), round(column), ' ')
@@ -219,7 +218,6 @@ def draws(canvas):
                 coro.send(None)
             except StopIteration:
                 coros.remove(coro)
-
 
         time.sleep(0.1)
         canvas.refresh()
