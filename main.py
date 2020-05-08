@@ -104,7 +104,7 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
 
 async def create_garbage_coros(canvas):
-    row, col = canvas.getmaxyx()
+    window_row_size, window_col_size = canvas.getmaxyx()
     global coros,year
     while True:
         if year < 1961:
@@ -114,7 +114,7 @@ async def create_garbage_coros(canvas):
             garbages_frames = fetch_garbages()
             garbage_frame = random.choice(garbages_frames)
             await sleep(random.randint(1, speed))
-            coros.append(fly_garbage(canvas, random.randint(2, col), garbage_frame))
+            coros.append(fly_garbage(canvas, random.randint(2, window_col_size), garbage_frame))
 
 
 async def animate_spaceship(frame1, frame2):
