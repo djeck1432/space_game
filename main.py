@@ -1,7 +1,6 @@
 import time
 import random
 import asyncio
-import web_pdb
 import curses
 from itertools import cycle
 from tools import read_controls, get_frame_size, draw_frame,fly_garbage,fetch_spaceship_imgs, fetch_garbages,sleep
