@@ -54,12 +54,12 @@ async def show_gameover(canvas):
     window_row_size,window_col_size = canvas.getmaxyx()
     with open('pictures/game_over.txt','r') as text:
         gameover = text.read()
-        frame_row_size,frame_col_size = get_frame_size(gameover)
-        middle_row = (window_row_size - frame_row_size) // 2
-        middle_col = (window_col_size - frame_col_size) // 2
-        while True:
-            draw_frame(canvas,middle_row,middle_col,gameover)
-            await asyncio.sleep(0)
+    frame_row_size,frame_col_size = get_frame_size(gameover)
+    middle_row = (window_row_size - frame_row_size) // 2
+    middle_col = (window_col_size - frame_col_size) // 2
+    while True:
+        draw_frame(canvas,middle_row,middle_col,gameover)
+        await asyncio.sleep(0)
 
 
 async def blink(random_ignition, canvas, row, column, symbol='*'):
@@ -89,6 +89,7 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     row_size, col_size = get_frame_size(garbage_frame)
     obstacle = Obstacle(row, column, row_size, col_size)
     obstacles.append(obstacle)
+
 
     while row < rows_number:
         if obstacle in obstacles_in_last_collisions:
