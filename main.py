@@ -50,6 +50,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
                 row += rows_speed
                 column += columns_speed
 
+
 async def show_gameover(canvas):
     window_row_size,window_col_size = canvas.getmaxyx()
     with open('pictures/game_over.txt','r') as text:
@@ -90,18 +91,21 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
     obstacle = Obstacle(row, column, row_size, col_size)
     obstacles.append(obstacle)
 
-
-    while row < rows_number:
-        if obstacle in obstacles_in_last_collisions:
+    try:
+        while row < rows_number :
+            if obstacle in obstacles_in_last_collisions:
+                obstacles.remove(obstacle)
+                await explode(canvas, row, column)
+                return None
+            else:
+                draw_frame(canvas, row, column, garbage_frame)
+                obstacle.row = row
+                await asyncio.sleep(0)
+                draw_frame(canvas, row, column, garbage_frame, negative=True)
+                row += speed
+    finally:
+        if obstacle in obstacles:
             obstacles.remove(obstacle)
-            await explode(canvas, row, column)
-            return None
-        else:
-            draw_frame(canvas, row, column, garbage_frame)
-            obstacle.row = row
-            await asyncio.sleep(0)
-            draw_frame(canvas, row, column, garbage_frame, negative=True)
-            row += speed
 
 
 async def create_garbage_coros(canvas):
@@ -156,7 +160,7 @@ async def run_spaceship(canvas):
             is_collision = obstacle.has_collision(row, column)
             if is_collision:
                 obstacles_in_last_collisions.append(obstacle)
-                draw_frame(canvas, row, column, FRAME, negative=True)
+                draw_frame(canvas, old_row, old_col, old_frame, negative=True)
                 await show_gameover(canvas)
                 return None
         else:
@@ -211,6 +215,7 @@ def draws(canvas):
     global coros,obstacles,year
     coros = create_coros(canvas)
     while True:
+        canvas.addstr(1,1,str(len(obstacles)))
         canvas.border()
         canvas.addstr(40,40,f'Year {year}')
         for coro in coros.copy():
