@@ -145,7 +145,7 @@ def control_screen_borders(canvas, row, column):
         row, column
     return row,column
 
-async def run_spaceships(canvas):
+async def run_spaceship(canvas):
     row_speed = column_speed = 0
     old_frame = ''
     global coros, obstacles,year
@@ -190,7 +190,7 @@ def create_coros(canvas):
     return [
         animate_spaceship(frame1, frame2),
         *stars_coros,
-        run_spaceships(canvas),
+        run_spaceship(canvas),
         get_year(),
         start_garbage_coro,
     ]
