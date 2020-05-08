@@ -39,8 +39,8 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
     curses.beep()
     while 0 < row < max_row and 0 < column < max_column:
         for obstacle in obstacles:
-            is_obstacle = obstacle.has_collision(row, column)
-            if is_obstacle:
+            is_collision = obstacle.has_collision(row, column)
+            if is_collision:
                 obstacles_in_last_collisions.append(obstacle)
                 return None
             else:
