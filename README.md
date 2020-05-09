@@ -14,10 +14,6 @@ Open the folder `space_game` next command in terminal:
 ```
 cd space_game
 ```
-Install the required libraries:
-```
-pip3 install -r requirements.txt
-```
 Run the game:
 ```
 python3 main.py
