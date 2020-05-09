@@ -134,18 +134,18 @@ async def animate_spaceship(frame1, frame2):
 
 def control_screen_borders(canvas, row, column):
     window_row_size, window_col_size = canvas.getmaxyx()
-    frame_row, frame_column = get_frame_size(FRAME)
-    border_col = window_col_size - frame_column
-    border_row = window_row_size - frame_row
+    frame_row_size, frame_col_size = get_frame_size(FRAME)
+    border_col = window_col_size - frame_col_size
+    border_row = window_row_size - frame_row_size
 
     if row <= 0:
         row = 1
     elif border_row <= row:
-        row = window_row_size - (frame_row + EDGE_INDENT)
+        row = window_row_size - (frame_row_size + EDGE_INDENT)
     elif column <= 0:
         column = 2
     elif border_col <= column:
-        column = window_col_size - (frame_column + EDGE_INDENT)
+        column = window_col_size - (frame_col_size + EDGE_INDENT)
     else:
         row, column
     return row,column
