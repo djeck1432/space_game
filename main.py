@@ -13,7 +13,7 @@ obstacles = []
 obstacles_in_last_collisions = []
 coros = []
 GARBAGES = ['duck.txt', 'hubble.txt', 'lamp.txt', 'trash_large.txt', 'trash_small.txt', 'trash_xl.txt']
-BORDER_LINE = 2
+EDGE_INDENT = 2
 year = 1957
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
@@ -141,11 +141,11 @@ def control_screen_borders(canvas, row, column):
     if row <= 0:
         row = 1
     elif border_row <= row:
-        row = window_row_size - (frame_row + BORDER_LINE)
+        row = window_row_size - (frame_row + EDGE_INDENT)
     elif column <= 0:
         column = 2
     elif border_col <= column:
-        column = window_col_size - (frame_column + BORDER_LINE)
+        column = window_col_size - (frame_column + EDGE_INDENT)
     else:
         row, column
     return row,column
@@ -186,8 +186,8 @@ def create_coros(canvas):
     star_types = ['+', '*', '.', ':']
     stars_coros = [blink(random.randint(0, 100),
                          canvas,
-                         random.randint(BORDER_LINE, window_row_size - BORDER_LINE),
-                         random.randint(BORDER_LINE, window_col_size - BORDER_LINE),
+                         random.randint(EDGE_INDENT, window_row_size - EDGE_INDENT),
+                         random.randint(EDGE_INDENT, window_col_size - EDGE_INDENT),
                          symbol=random.choice(star_types)
                          ) for _ in range(100)
                    ]
